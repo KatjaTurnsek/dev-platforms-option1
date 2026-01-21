@@ -151,11 +151,11 @@ Suggested flow:
 
 ## Motivation
 
-I chose **Option 1** because I wanted to focus on building a backend API with authentication and database integration.
+I chose **Option 1** because I wanted to focus on building a secure REST API and learn authentication and database connection in a simple way.
 
-**What I liked:** setting up endpoints with Express Router, connecting to MySQL, and verifying everything in Postman.  
-**What I didn’t enjoy:** debugging small setup issues (headers, Postman settings, and environment variables).  
-**What I found difficult:** connecting all parts together (MySQL + queries, JWT middleware, validation).  
+**What I liked:** I liked to set up endpoints with Express Router, connect MySQL, and test the requests in Postman. It was good to see the full flow working (register - login - token - create article - list articles).
+**What I didn’t enjoy:** Setup problems can take much time, like Postman headers, `.env` variables, and database tools versions. Also I am a very visual person, so backend-only work can make me feel a bit “blind”, because I don’t see a UI and I must test in Postman/curl.
+**What I found difficult:** To understand JWT middleware and make sure the protected route is really protected. Also TypeScript with Express (like adding `req.user`) and making the SQL queries correct.
 
-**Custom API vs SaaS (Supabase):**  
-A custom API gives full control over database structure, authentication flow, and logic, but takes more setup and maintenance. Supabase is faster to start with because many backend features are already provided, but you rely on the service and have less control over implementation details.
+**Custom API vs SaaS (Supabase):**
+A custom API gives more control and flexibility, but it needs more setup and maintenance. Supabase is faster to start because many backend parts are already there, but you depend on the service and you have less control.
