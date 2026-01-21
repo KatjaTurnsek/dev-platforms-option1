@@ -1,100 +1,161 @@
-# dev-platforms-option1
+# development-platforms-ca (Option 1)
 
-A beginner-friendly development platforms setup using **Node.js**, **Express**, and **TypeScript**.
-This project runs a small API locally and is tested with **Postman**.
+A simple **News Platform API** built with **Express + TypeScript + MySQL**.
+
+Users can:
+- register and log in (JWT auth + bcrypt password hashing)
+- view all news articles (public)
+- create new articles (protected route, requires JWT)
+
+Tested with **Postman**.
+
+---
+
+## Tech stack
+
+- Express.js (TypeScript)
+- MySQL + mysql2
+- JWT authentication
+- bcrypt password hashing
+
+---
 
 ## Installation
 
 ### Requirements
-
-- Node.js + npm installed
-- (Optional) Postman Desktop Agent for testing localhost requests
+- Node.js + npm
+- MySQL (local)
+- (Recommended) Postman Desktop Agent (for localhost requests)
 
 ### Setup
 
-1. Clone the repo:
+1. Clone the repo and enter the folder:
 
 ```bash
-git clone https://github.com/KatjaTurnsek/dev-platforms-option1.git
+git clone https://github.com/KatjaTurnsek/development-platforms-ca.git
+cd development-platforms-ca
 ```
 
-2. Go into the project folder:
-
-```bash
-cd dev-platforms-option1
-```
-
-3. Install dependencies:
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
+---
+
 ## Configuration
 
-No environment variables are required for this version of the project.
+Create a `.env` file in the project root:
 
-## Run the project (development)
+```env
+JWT_SECRET=change_me_to_a_long_random_string
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=blog
+DB_PORT=3306
+```
 
-Start the server:
+Notes:
+- `JWT_SECRET` can be any long random string.
+- `DB_PASSWORD` is the password you set in MySQL.
+- The database name (`DB_NAME`) must match the schema you created (example: `blog`).
 
+---
+
+## Database
+
+This repo includes an exported SQL file:
+
+- `development-platforms-ca.sql`
+
+Import it in MySQL Workbench (or via CLI) to create the schema and tables.
+
+Tables used:
+- `users (id, email, password_hash, created_at)`
+- `articles (id, title, body, category, submitted_by, created_at)`
+
+---
+
+## Run the project
+
+### Development (watch mode)
 ```bash
 npm run dev
 ```
 
-The server runs at:
+### Build
+```bash
+npm run build
+```
 
-- http://localhost:3000
+### Start production build
+```bash
+npm start
+```
 
-Stop the server with:
+Server runs on:
+- `http://localhost:3000`
 
+Stop with:
 - `Ctrl + C`
 
-## Available scripts
-
-- `npm run dev` - runs the server in watch mode using `tsx`
+---
 
 ## Endpoints
 
-- `GET /`  
-  Returns a simple text message.
-
-- `GET /health`  
-  Returns JSON:
+### Auth
+- `POST /auth/register`  
+  Body:
   ```json
-  { "status": "ok" }
+  { "email": "test@example.com", "password": "Password123!" }
   ```
+
+- `POST /auth/login`  
+  Body:
+  ```json
+  { "email": "test@example.com", "password": "Password123!" }
+  ```
+  Returns:
+  ```json
+  { "token": "..." }
+  ```
+
+### Articles
+- `GET /articles` (public)  
+  Returns list of articles with submitter email.
+
+- `POST /articles` (protected)  
+  Requires header:
+  `Authorization: Bearer <token>`
+
+  Body:
+  ```json
+  { "title": "First news", "body": "Hello world", "category": "General" }
+  ```
+
+---
 
 ## Testing with Postman
 
-1. Open Postman and select **Desktop Agent** (Cloud Agent can’t call localhost)
-2. Send requests to:
+Important: use **Desktop Agent** (Cloud Agent can’t call localhost).
 
-- `GET http://localhost:3000/`
-- `GET http://localhost:3000/health`
+Suggested flow:
+1. Register: `POST /auth/register`
+2. Login: `POST /auth/login` → copy token
+3. Create article: `POST /articles` with Bearer Token
+4. View all: `GET /articles`
 
-## Project structure
-
-```txt
-dev-platforms-option1/
-├─ src/
-│  └─ server.ts
-├─ package.json
-├─ package-lock.json
-├─ package-lock.json
-├─ tsconfig.json
-└─ README.md
-```
+---
 
 ## Motivation
 
-I chose **Option 1** because I wanted to test working on the **server-side** only and wanted practice setting up a small API using modern development tooling (TypeScript, npm scripts, and a simple Express server).
+I chose **Option 1** because I wanted to focus on building a backend API with authentication and database integration.
 
-**What I liked:** getting a server running quickly, adding routes, and testing responses in Postman.
+**What I liked:** setting up endpoints with Express Router, connecting to MySQL, and verifying everything in Postman.  
+**What I didn’t enjoy:** debugging small setup issues (headers, Postman settings, and environment variables).  
+**What I found difficult:** connecting all parts together (MySQL + queries, JWT middleware, validation).  
 
-**What I didn’t enjoy:** small setup issues (like Postman Cloud Agent not working with localhost) can be confusing as a beginner.
-
-**What I found difficult:** understanding how the tooling pieces fit together (TypeScript config, dev server/watch, and how Express starts and listens on a port).
-
-**Custom API vs SaaS (e.g. Supabase):**  
-A custom API gives me more control, but it’s more work to set up and maintain. Supabase can speed things up because it provides many backend features for you, but you rely on the service and may have less flexibility.
+**Custom API vs SaaS (Supabase):**  
+A custom API gives full control over database structure, authentication flow, and logic, but takes more setup and maintenance. Supabase is faster to start with because many backend features are already provided, but you rely on the service and have less control over implementation details.
